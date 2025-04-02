@@ -1,0 +1,325 @@
+{
+  "attributes": [
+    {
+      "trait_type": "CO2 Saved (tonnes)",
+      "value": 88
+    },
+    {
+      "trait_type": "Deforestation Prevented (km^2)",
+      "value": 36
+    }
+  ],
+  "metadata_version": "1.0",
+  "token_details": {
+    "timestamp_minted": "2024-05-03T22:17:20Z",
+    "serial_number": 1,
+    "world_conditions_on_mint": {
+      "co2_ppm": 451.22,
+      "global_temperature_anomaly_c": 1.08,
+      "ch4_ppb": 2168.08,
+      "arctic_sea_ice_min_extent_million_km2": 4.38,
+      "ice_sheets_status": "Net Mass Loss",
+      "sea_level_mm_above_ref": 97.65,
+      "ocean_warming_status": "Elevated",
+      "nasa_image": "https://apod.nasa.gov/apod/calendar/S_240503.jpg",
+      "coordinates": {
+        "latitude": 69.3085321907009,
+        "longitude": 92.02421942395353
+      },
+      "planetary_image": "Not Available",
+      "weather_data": {
+        "open_meteo": {
+          "time": [
+            "2024-05-03T00:00",
+            "2024-05-03T01:00",
+            "2024-05-03T02:00",
+            "2024-05-03T03:00",
+            "2024-05-03T04:00",
+            "2024-05-03T05:00",
+            "2024-05-03T06:00",
+            "2024-05-03T07:00",
+            "2024-05-03T08:00",
+            "2024-05-03T09:00",
+            "2024-05-03T10:00",
+            "2024-05-03T11:00",
+            "2024-05-03T12:00",
+            "2024-05-03T13:00",
+            "2024-05-03T14:00",
+            "2024-05-03T15:00",
+            "2024-05-03T16:00",
+            "2024-05-03T17:00",
+            "2024-05-03T18:00",
+            "2024-05-03T19:00",
+            "2024-05-03T20:00",
+            "2024-05-03T21:00",
+            "2024-05-03T22:00",
+            "2024-05-03T23:00"
+          ],
+          "temperature_2m": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "precipitation": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "relative_humidity_2m": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "wind_speed_10m": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "wind_direction_10m": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "cloud_cover": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "pressure_msl": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      },
+      "environmental_data": {},
+      "planetary_computer_data": {},
+      "data_sources": [
+        {
+          "name": "NASA GISS",
+          "url": "https://data.giss.nasa.gov/"
+        },
+        {
+          "name": "NOAA Climate Data",
+          "url": "https://www.ncdc.noaa.gov/"
+        },
+        {
+          "name": "Microsoft Planetary Computer",
+          "url": "https://planetarycomputer.microsoft.com/"
+        },
+        {
+          "name": "Open-Meteo",
+          "url": "https://open-meteo.com/"
+        },
+        {
+          "name": "OpenTopography",
+          "url": "https://opentopography.org/"
+        },
+        {
+          "name": "World Bank Climate Change Knowledge Portal",
+          "url": "https://climateknowledgeportal.worldbank.org/"
+        },
+        {
+          "name": "FAO SoilGrids",
+          "url": "https://www.isric.org/explore/soilgrids"
+        }
+      ]
+    },
+    "achievements": [
+      {
+        "project_name": "Legado Early - Guania Colombia",
+        "description": "Before going sale, Legado has helped communities in the Guania region of Colombia to protect 20,000 hectares of rainforest, preventing deforestation and conserving biodiversity.",
+        "current_status": "Up to 8 communities are now involved in the project, with 100% of the land protected from deforestation.",
+        "region": "Amazon Rainforest, Colombia",
+        "co2_sequestered_estimate_tonnes": 4,
+        "deforestation_prevented_km2": 5
+      },
+      {
+        "project_name": "Legado Early - Africa",
+        "description": "Legado Africa is a project that aims to give access to clean water to 1 million people in Africa by 2030.",
+        "current_status": "The project has already provided clean water to 100,000 people in 2024.",
+        "region": "Africa",
+        "co2_saved_estimate_tonnes": 1,
+        "deforestation_prevented_km2": 1
+      }
+    ],
+    "data_sources": [
+      {
+        "name": "NASA GISS",
+        "url": "https://data.giss.nasa.gov/"
+      },
+      {
+        "name": "NOAA Climate Data",
+        "url": "https://www.ncdc.noaa.gov/"
+      },
+      {
+        "name": "Microsoft Planetary Computer",
+        "url": "https://planetarycomputer.microsoft.com/"
+      },
+      {
+        "name": "Open-Meteo",
+        "url": "https://open-meteo.com/"
+      },
+      {
+        "name": "OpenTopography",
+        "url": "https://opentopography.org/"
+      },
+      {
+        "name": "World Bank Climate Change Knowledge Portal",
+        "url": "https://climateknowledgeportal.worldbank.org/"
+      },
+      {
+        "name": "FAO SoilGrids",
+        "url": "https://www.isric.org/explore/soilgrids"
+      }
+    ],
+    "future_updates": {}
+  }
+}
