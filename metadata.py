@@ -8,6 +8,8 @@ import urllib.request
 import zipfile
 import io
 from io import StringIO
+import multiprocessing
+from tqdm import tqdm
 
 def random_date(start, end):
     """
@@ -199,42 +201,41 @@ achievements_template = [
     }
 ]
 
-# Total number of files to generate
-total_files = 20_000_000
-
-for i in range(1, total_files + 1):
-    # Generate random attribute values
-    co2_saved = random.randint(20, 400)  # CO2 Saved (tonnes)
-    deforestation_prevented = random.randint(0, 55)  # Deforestation Prevented (km^2)
+def generate_metadata_batch(start_idx, end_idx):
+    """
+    Generate a batch of metadata files in parallel.
+    """
+    batch_geojson_features = []
     
-    # Generate a random minted timestamp within the specified range
-    minted_datetime = random_date(start_date, end_date)
-    minted_date_str = minted_datetime.strftime("%Y-%m-%dT%H:%M:%SZ")
-    minted_date_for_api = minted_datetime.strftime("%Y-%m-%d")
-    minted_date_for_image = minted_datetime.strftime("%y%m%d")
-    
-    # Generate random world conditions based on base values ± specified deltas
-    co2_ppm = round(420.5 + random.uniform(-50, 50), 2)
-    global_temp = round(1.24 + random.uniform(-0.3, 0.3), 2)
-    ch4_ppb = round(1895 + random.uniform(-300, 300), 2)
-    arctic_ice = round(3.9 + random.uniform(-0.5, 0.5), 2)
-    sea_level = round(95 + random.uniform(-10, 10), 2)
-    
-    # Determine achievements: always include for the first 50, then with a 1% chance.
-    if i <= 50 or random.random() < 0.01:
-        achievements = achievements_template
-    else:
-        achievements = []
-    
-    # Get random land coordinates
-    lat, lon = get_random_land_coordinate()
-    
-    # Add point to GeoJSON file
-    try:
-        with open(geojson_path, "r") as f:
-            geojson_data = json.load(f)
+    for i in range(start_idx, end_idx + 1):
+        # Generate random attribute values
+        co2_saved = random.randint(20, 400)
+        deforestation_prevented = random.randint(0, 55)
         
-        new_feature = {
+        # Generate a random minted timestamp within the specified range
+        minted_datetime = random_date(start_date, end_date)
+        minted_date_str = minted_datetime.strftime("%Y-%m-%dT%H:%M:%SZ")
+        minted_date_for_api = minted_datetime.strftime("%Y-%m-%d")
+        minted_date_for_image = minted_datetime.strftime("%y%m%d")
+        
+        # Generate random world conditions
+        co2_ppm = round(420.5 + random.uniform(-50, 50), 2)
+        global_temp = round(1.24 + random.uniform(-0.3, 0.3), 2)
+        ch4_ppb = round(1895 + random.uniform(-300, 300), 2)
+        arctic_ice = round(3.9 + random.uniform(-0.5, 0.5), 2)
+        sea_level = round(95 + random.uniform(-10, 10), 2)
+        
+        # Determine achievements
+        if i <= 50 or random.random() < 0.01:
+            achievements = achievements_template
+        else:
+            achievements = []
+        
+        # Get random land coordinates
+        lat, lon = get_random_land_coordinate()
+        
+        # Add to batch GeoJSON features
+        batch_geojson_features.append({
             "type": "Feature",
             "properties": {
                 "id": str(i),
@@ -245,88 +246,127 @@ for i in range(1, total_files + 1):
             },
             "geometry": {
                 "type": "Point",
-                "coordinates": [lon, lat]  # GeoJSON uses [longitude, latitude] order
+                "coordinates": [lon, lat]
+            }
+        })
+        
+        # Simulate data
+        weather_data = simulate_weather_data(lat, lon, minted_date_for_api)
+        environmental_data = simulate_environmental_data(lat, lon, minted_date_for_api)
+        planetary_computer_data = simulate_planetary_computer_data(lat, lon, minted_date_for_api)
+        planetary_image = simulate_imagery(lat, lon, minted_date_for_api)
+        
+        # Build metadata
+        metadata = {
+            "attributes": [
+                {
+                    "trait_type": "CO2 Saved (tonnes)",
+                    "value": co2_saved
+                },
+                {
+                    "trait_type": "Deforestation Prevented (km^2)",
+                    "value": deforestation_prevented
+                }
+            ],
+            "metadata_version": "1.0",
+            "token_details": {
+                "timestamp_minted": minted_date_str,
+                "serial_number": i,
+                "coordinates": {
+                    "latitude": lat,
+                    "longitude": lon
+                },
+                "world_conditions_on_mint": {
+                    "co2_ppm": co2_ppm,
+                    "global_temperature_anomaly_c": global_temp,
+                    "ch4_ppb": ch4_ppb,
+                    "arctic_sea_ice_min_extent_million_km2": arctic_ice,
+                    "ice_sheets_status": "Net Mass Loss",
+                    "sea_level_mm_above_ref": sea_level,
+                    "ocean_warming_status": "Elevated",
+                    "nasa_image": f"https://apod.nasa.gov/apod/calendar/S_{minted_date_for_image}.jpg",
+                    "planetary_image": planetary_image,
+                    "weather_data": weather_data,
+                    "environmental_data": environmental_data,
+                    "planetary_computer_data": planetary_computer_data,
+                },
+                "achievements": achievements,
+                "data_sources": [
+                    {
+                        "name": "NASA GISS",
+                        "url": "https://data.giss.nasa.gov/"
+                    },
+                    {
+                        "name": "NOAA Climate Data",
+                        "url": "https://www.ncdc.noaa.gov/"
+                    },
+                    {
+                        "name": "Microsoft Planetary Computer",
+                        "url": "https://planetarycomputer.microsoft.com/"
+                    },
+                    {
+                        "name": "Open-Meteo",
+                        "url": "https://open-meteo.com/"
+                    }
+                ],
+                "future_updates": {}
             }
         }
         
-        geojson_data["features"].append(new_feature)
+        # Write metadata to file
+        file_path = os.path.join(output_folder, f"{i}.txt")
+        with open(file_path, "w") as f:
+            json.dump(metadata, f, indent=2)
+    
+    return batch_geojson_features
+
+def main():
+    # Total number of files to generate
+    total_files = 20_000_000
+    
+    # Number of processes to use (use all available CPU cores)
+    num_processes = multiprocessing.cpu_count()
+    
+    # Calculate batch size for each process
+    batch_size = total_files // num_processes
+    
+    # Create a pool of processes
+    pool = multiprocessing.Pool(processes=num_processes)
+    
+    # Generate tasks for each process
+    tasks = []
+    for i in range(num_processes):
+        start_idx = i * batch_size + 1
+        end_idx = (i + 1) * batch_size if i < num_processes - 1 else total_files
+        tasks.append((start_idx, end_idx)) 
+    
+    # Initialize progress bar
+    pbar = tqdm(total=total_files, desc="Generating metadata files")
+    
+    # Process batches in parallel and collect GeoJSON features
+    all_geojson_features = []
+    for batch_features in pool.starmap(generate_metadata_batch, tasks):
+        all_geojson_features.extend(batch_features)
+        pbar.update(len(batch_features))
+    
+    # Close the pool
+    pool.close()
+    pool.join()
+    pbar.close()
+    
+    # Update GeoJSON file with all features
+    try:
+        with open(geojson_path, "r") as f:
+            geojson_data = json.load(f)
         
-        # Write back to file
+        geojson_data["features"] = all_geojson_features
+        
         with open(geojson_path, "w") as f:
             json.dump(geojson_data, f)
     except Exception as e:
         print(f"Error updating GeoJSON file: {e}")
     
-    # Simulate data instead of making API calls
-    weather_data = simulate_weather_data(lat, lon, minted_date_for_api)
-    environmental_data = simulate_environmental_data(lat, lon, minted_date_for_api)
-    planetary_computer_data = simulate_planetary_computer_data(lat, lon, minted_date_for_api)
-    planetary_image = simulate_imagery(lat, lon, minted_date_for_api)
-    
-    # Build the metadata dictionary with the simulated data
-    metadata = {
-        "attributes": [
-            {
-                "trait_type": "CO2 Saved (tonnes)",
-                "value": co2_saved
-            },
-            {
-                "trait_type": "Deforestation Prevented (km^2)",
-                "value": deforestation_prevented
-            }
-        ],
-        "metadata_version": "1.0",
-        "token_details": {
-            "timestamp_minted": minted_date_str,
-            "serial_number": i,
-            "coordinates": {
-                "latitude": lat,
-                "longitude": lon
-            },
-            "world_conditions_on_mint": {
-                "co2_ppm": co2_ppm,
-                "global_temperature_anomaly_c": global_temp,
-                "ch4_ppb": ch4_ppb,
-                "arctic_sea_ice_min_extent_million_km2": arctic_ice,
-                "ice_sheets_status": "Net Mass Loss",
-                "sea_level_mm_above_ref": sea_level,
-                "ocean_warming_status": "Elevated",
-                "nasa_image": f"https://apod.nasa.gov/apod/calendar/S_{minted_date_for_image}.jpg",
-                "planetary_image": planetary_image,
-                "weather_data": weather_data,
-                "environmental_data": environmental_data,
-                "planetary_computer_data": planetary_computer_data,
-            },
-            "achievements": achievements,
-            "data_sources": [
-                {
-                    "name": "NASA GISS",
-                    "url": "https://data.giss.nasa.gov/"
-                },
-                {
-                    "name": "NOAA Climate Data",
-                    "url": "https://www.ncdc.noaa.gov/"
-                },
-                {
-                    "name": "Microsoft Planetary Computer",
-                    "url": "https://planetarycomputer.microsoft.com/"
-                },
-                {
-                    "name": "Open-Meteo",
-                    "url": "https://open-meteo.com/"
-                }
-            ],
-            "future_updates": {}
-        }
-    }
-    
-    # Write metadata to file
-    file_path = os.path.join(output_folder, f"{i}.txt")
-    with open(file_path, "w") as f:
-        json.dump(metadata, f, indent=2)
-    
-    # Print progress every 100,000 files
-    if i % 100000 == 0:
-        print(f"Generated {i} files.")
+    print("Finished generating metadata files and GeoJSON.")
 
-print("Finished generating metadata files and GeoJSON.")
+if __name__ == "__main__":
+    main()
